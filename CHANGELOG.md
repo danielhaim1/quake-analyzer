@@ -19,6 +19,3 @@ All notable changes to this project will be documented in this file.
 - Basic project structure, README, LICENSE (MIT).
 - Setup for packaging using `pyproject.toml` and `setup.py`.
 - GitHub Actions for CI (linting) and automated PyPI publishing on release.
-
-[Unreleased]: https://github.com/danielhaim1/quake-analyzer/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/danielhaim1/quake-analyzer/releases/tag/v0.0.1 
