@@ -17,6 +17,7 @@ quake-analyzer is a command-line tool that fetches and analyzes earthquake data,
 - Analyze major earthquakes and their recurrence intervals.
 - Export the list to CSV.
 - Plot the count of major earthquakes per year.
+- Estimate the recurrence interval and probability of future major earthquakes.
 
 ---
 
@@ -48,6 +49,7 @@ This project relies on the following major Python libraries:
 | `--radius`   | Radius in kilometers around the specified location                                         | None             |
 | `--export`   | Export results to CSV                                                                      | Off              |
 | `--plot`     | Plot earthquakes per year                                                                   | Off              |
+| `--estimate`     | Estimate the recurrence interval and probability of major quakes | Off              |
 
 ---
 
@@ -56,6 +58,12 @@ This project relies on the following major Python libraries:
 ### Global major quakes in past 20 years
 ```bash
 quake-analyzer --fetch --minmag 6.0 --days 7300
+```
+
+### Estimate Next Quake
+
+```bash
+quake-analyzer --fetch --minmag 6.0 --days 7300 --estimate
 ```
 
 ### Location based filtering
@@ -87,7 +95,6 @@ quake-analyzer --fetch --location "Indonesia" --radius 500 --minmag 6.0 --days 7
 # Export and plot together
 quake-analyzer --fetch --location "Mexico" --radius 300 --minmag 6.2 --days 5000 --export --plot
 ```
-
 ---
 
 ## Location Resolution
@@ -107,6 +114,29 @@ Each file should include:
 ```csv
 name,latitude,longitude
 ```
+---
+
+## Estimate: How It Works
+
+The estimation feature calculates two important metrics based on recent earthquake data:
+1. Recurrence Interval: The average time interval (in years) between major earthquakes (≥ 6.0 magnitude).
+2. Probability: The estimated probability of a major earthquake occurring within the next year.
+
+### How the Estimate is Calculated:
+
+- The tool first filters major quakes (≥ 6.0 magnitude) from the fetched or provided earthquake data.
+- It then calculates the time intervals between consecutive quakes.
+- The mean recurrence interval is computed as the average of those time intervals.
+- Finally, the probability of an earthquake occurring within the next year is estimated as 1 / mean recurrence interval.
+
+Example:
+```bash
+quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 6.0 --days 3650 --estimate
+```
+
+- Fetch earthquake data for Tokyo (within a 300 km radius).
+- Filter by magnitude ≥ 6.0.
+- Estimate the recurrence interval and probability based on the quakes in that region over the last 10 years (3650 days).
 
 ---
 
@@ -117,20 +147,23 @@ The tool will output earthquake data in the terminal, including:
 - The years in which earthquakes occurred.
 - Gaps between major earthquakes.
 - A summary of earthquakes per year.
+- Estimates of recurrence intervals and probabilities (if --estimate is used).
 
-If `--export` is used, the results will be saved to a CSV file with the following columns:
-
+- If `--export` is used, the results will be saved to a CSV file with the following columns:
 - Years Ago
 - Magnitude
 - Date
 - Timestamp
 - Location
 - Type (Major or Moderate)
+- Mean Recurrence Interval (years)
+- Estimated Probability (per year)
 
 ---
 
 ## Screenshots
 
+![Quake Analyzer Screenshot (Estimate)](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-8.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-1.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-2.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-3.png?raw=true)

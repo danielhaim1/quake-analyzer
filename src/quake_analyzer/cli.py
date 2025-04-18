@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 import argparse
 import ast
@@ -63,6 +64,28 @@ def fetch_usgs_quakes(min_magnitude=4.5, days=90, lat=None, lon=None, radius_km=
 
     return quakes
 
+# Estimate Recurrence Interval and Probability
+def estimate_recurrence_interval(quake_data):
+    # Extract timestamps of the earthquakes
+    timestamps = [q[0] for q in quake_data]
+    magnitudes = [q[1] for q in quake_data]
+
+    # Filter major quakes (>= 6.0 magnitude)
+    major_quakes = [q for q in zip(timestamps, magnitudes) if q[1] >= 6.0]
+    
+    # Convert timestamps to datetime objects
+    dates = [datetime.fromisoformat(ts) for ts, _ in major_quakes]
+
+    # Calculate time intervals (in years)
+    time_intervals = [(dates[i] - dates[i-1]).days / 365.25 for i in range(1, len(dates))]
+
+    # Calculate mean recurrence interval
+    mean_recurrence_interval = np.mean(time_intervals)
+    probability = 1 / mean_recurrence_interval if mean_recurrence_interval > 0 else 0
+
+    print(Fore.GREEN + f"Mean Recurrence Interval: {mean_recurrence_interval:.2f} years")
+    print(Fore.YELLOW + f"Estimated Probability of a major earthquake occurring in 1 year: {probability:.4f}")
+
 def main():
     parser = argparse.ArgumentParser(description="Analyze quake recurrence intervals.")
     parser.add_argument("--data", help="List of quakes as [[timestamp, magnitude, 'location'], ...]")
@@ -73,28 +96,40 @@ def main():
     parser.add_argument("--radius", type=float, help="Radius in km for regional filter")
     parser.add_argument("--export", action="store_true", help="Export filtered quakes to CSV")
     parser.add_argument("--plot", action="store_true", help="Plot quakes per year chart")
+    parser.add_argument("--estimate", action="store_true", help="Estimate the recurrence interval and probability of major quakes")
     args = parser.parse_args()
 
-    if args.location:
-        place = args.location.strip().lower()
-        match = PLACE_COORDS[PLACE_COORDS["name_lower"] == place]
-        if not match.empty:
-            lat = match.iloc[0]["latitude"]
-            lon = match.iloc[0]["longitude"]
-            print(Fore.WHITE + f"Using coordinates for {args.location.title()}: Latitude {lat}, Longitude {lon}")
+    # Fetch or load quake data
+    if args.estimate:
+        print(Fore.CYAN + "Performing Recurrence Interval and Probability Estimation...")
+        if args.data:
+            try:
+                quake_data = ast.literal_eval(args.data)
+            except Exception as e:
+                print(Fore.RED + "Invalid data format. Make sure it's a Python-style list.")
+                return
+            estimate_recurrence_interval(quake_data)
+        elif args.fetch:
+            quake_data = fetch_usgs_quakes(
+                min_magnitude=args.minmag,
+                days=args.days,
+                lat=None,
+                lon=None,
+                radius_km=None
+            )
+            estimate_recurrence_interval(quake_data)
         else:
-            print(Fore.RED + f"Coordinates for '{args.location}' not found in available datasets.")
+            print(Fore.RED + "Provide --data or --fetch for earthquake data.")
             return
-    else:
-        lat = lon = None
+        return
 
     if args.fetch:
         quake_data = fetch_usgs_quakes(
             min_magnitude=args.minmag,
             days=args.days,
-            lat=lat,
-            lon=lon,
-            radius_km=args.radius
+            lat=None,
+            lon=None,
+            radius_km=None
         )
         print(Fore.WHITE + f"Fetched {len(quake_data)} quakes")
     elif args.data:
@@ -107,6 +142,7 @@ def main():
         print(Fore.RED + "Provide --data or --fetch")
         return
 
+    # Process quake list
     quakes = []
     for q in quake_data:
         event_time = datetime.fromisoformat(q[0])
@@ -136,11 +172,13 @@ def main():
     gaps = [major_years[i+1] - major_years[i] for i in range(len(major_years) - 1)]
     avg_gap = sum(gaps) / len(gaps) if gaps else 0
 
+    # Display major earthquake analysis with estimate
     print(Fore.GREEN + "\n=== MAJOR EARTHQUAKE ANALYSIS ===")
     print(Fore.YELLOW + f"Total major quakes (≥ {args.minmag}):", len(df_major))
     print(Fore.CYAN + "Years:", major_years)
     print(Fore.CYAN + "Gaps between events:", gaps)
     print(Fore.CYAN + "Average recurrence interval:", round(avg_gap, 2), "years")
+    estimate_recurrence_interval(quake_data)  # Display the estimate here
 
     per_year = df_major.groupby("Date").size()
     print(Fore.GREEN + "\n=== QUAKES PER YEAR ===")
