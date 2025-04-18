@@ -1,0 +1,1 @@
+# This file makes src/quake_analyzer a Python package 

@@ -1,0 +1,120 @@
+# ======================
+# macOS
+# ======================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Icon^M  # Finder icon files
+
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.log
+
+# Compiled files
+*$py.class
+
+# C extensions
+*.so
+
+# ======================
+# Distribution & Packaging
+# ======================
+.Python
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg
+*.egg-info/
+*.egg-info
+MANIFEST
+.installed.cfg
+
+# ======================
+# Virtual Environments
+# ======================
+env/
+ENV/
+venv/
+.venv/
+.pyenv/
+lib/
+lib64/
+include/
+bin/
+etc/
+share/
+
+# ======================
+# Editors / IDEs
+# ======================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Swap and temp files
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
+*.~*
+
+# ======================
+# Jupyter Notebooks
+# ======================
+.ipynb_checkpoints
+
+# ======================
+# Testing / Coverage
+# ======================
+.coverage
+.coverage.*
+.cache/
+pytest_cache/
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# ======================
+# Type Checkers
+# ======================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
+# ======================
+# Documentation
+# ======================
+/site
+docs/example-*.png
+
+# ======================
+# Project-specific
+# ======================
+quake_analyzer.egg-info/
+*.csv
+*.png
+!docs/*.png
