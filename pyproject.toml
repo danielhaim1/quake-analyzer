@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "quake-analyzer"
 # Manually set the version before release
-version = "0.0.4"
+version = "0.0.5"
 description = "CLI tool to fetch and analyze earthquake data from USGS"
 readme = "README.md"
 requires-python = ">=3.7"
