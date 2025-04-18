@@ -7,13 +7,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # This workflow uses an API token stored in the PYPI_API_TOKEN secret
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Fetch all history and tags for setuptools_scm
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
