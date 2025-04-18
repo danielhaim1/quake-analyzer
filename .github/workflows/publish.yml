@@ -23,12 +23,10 @@ jobs:
       run: python -m pip install --upgrade pip build twine
 
     - name: Build package
-      # setuptools_scm will automatically determine the version from the Git tag
       run: python -m build
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        # API token stored in GitHub Secrets
         user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+        password: ${{ secrets.PYPI_API_TOKEN_LIVE }}
