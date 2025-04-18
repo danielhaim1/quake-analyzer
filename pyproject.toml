@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quake-analyzer"
+dynamic = ["version"]
+description = "CLI tool to fetch and analyze earthquake data from USGS"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+authors = [
+  { name="Daniel Haim"},
+]
+keywords = ["earthquake", "usgs", "geology", "cli", "data analysis", "visualization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Utilities",
+    "Environment :: Console",
+]
+
+dependencies = [
+    "pandas",
+    "requests",
+    "matplotlib",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/danielhaim1/quake-analyzer"
+"Repository" = "https://github.com/danielhaim1/quake-analyzer"
+"Bug Tracker" = "https://github.com/danielhaim1/quake-analyzer/issues"
+
+[project.scripts]
+quake-analyzer = "quake_analyzer.cli:main"
+
+[tool.setuptools_scm]
+write_to = "src/quake_analyzer/_version.py"
+write_to_template = "__version__ = \"{version}\"\n"
+tag_regex = "^(?:[\\w-]+@)?(?P<version>[vV]?\\d+(?:\\.\\d+)+(?:[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*)?(?:-[a-zA-Z0-9]+)?(?:\\+[a-zA-Z0-9\\.]+)?)$"
