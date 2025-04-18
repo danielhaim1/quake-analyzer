@@ -162,7 +162,7 @@ The tool will output earthquake data in the terminal, including:
 
 ## Screenshots
 
-![Quake Analyzer Screenshot (Estimate)](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-8.png?raw=true)
+![Quake Analyzer Screenshot (Estimate)](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-7.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-1.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-2.png?raw=true)
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-3.png?raw=true)
