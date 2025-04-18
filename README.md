@@ -6,7 +6,7 @@
 
 quake-analyzer is a command-line tool that fetches and analyzes earthquake data, including filtering based on magnitude and location, calculating recurrence intervals, and generating reports. This tool can help researchers and enthusiasts analyze earthquake data from the [USGS database](https://earthquake.usgs.gov/fdsnws/event/1/) over various timeframes.
 
-![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/main.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/quake-analyzer.png?raw=true)
 
 ---
 
