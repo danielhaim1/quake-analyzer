@@ -1,5 +1,10 @@
 # Quake Analyzer
 
+[![Build Status](https://img.shields.io/travis/danielhaim1/quake-analyzer.svg)](https://travis-ci.org/danielhaim1/quake-analyzer)
+[![License](https://img.shields.io/github/license/danielhaim1/quake-analyzer.svg)](https://github.com/danielhaim1/quake-analyzer/blob/master/LICENSE)
+[![Python Version](https://img.shields.io/pypi/pyversions/quake-analyzer.svg)](https://pypi.org/project/quake-analyzer/)
+[![PyPI Version](https://img.shields.io/pypi/v/quake-analyzer.svg)](https://pypi.org/project/quake-analyzer/)
+
 quake-analyzer is a command-line tool that fetches and analyzes earthquake data, including filtering based on magnitude and location, calculating recurrence intervals, and generating reports. This tool can help researchers and enthusiasts analyze earthquake data from the [USGS database](https://earthquake.usgs.gov/fdsnws/event/1/) over various timeframes.
 
 ![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/main.png?raw=true)
