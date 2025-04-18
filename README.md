@@ -1,6 +1,5 @@
 # Quake Analyzer
 
-[![Build Status](https://img.shields.io/travis/danielhaim1/quake-analyzer.svg)](https://travis-ci.org/danielhaim1/quake-analyzer)
 [![License](https://img.shields.io/github/license/danielhaim1/quake-analyzer.svg)](https://github.com/danielhaim1/quake-analyzer/blob/master/LICENSE)
 [![Python Version](https://img.shields.io/pypi/pyversions/quake-analyzer.svg)](https://pypi.org/project/quake-analyzer/)
 [![PyPI Version](https://img.shields.io/pypi/v/quake-analyzer.svg)](https://pypi.org/project/quake-analyzer/)
