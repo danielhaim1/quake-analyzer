@@ -7,14 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/quake-analyzer
-    permissions:
-      id-token: write
+    # This workflow uses an API token stored in the PYPI_API_TOKEN secret
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all history and tags for setuptools_scm
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -25,10 +24,12 @@ jobs:
       run: python -m pip install --upgrade pip build twine
 
     - name: Build package
+      # setuptools_scm will automatically determine the version from the Git tag
       run: python -m build
 
-    # See: https://docs.pypi.org/trusted-publishers/
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      #   user: __token__
-      #   password: ${{ secrets.PYPI_API_TOKEN }}
+      with:
+        # API token stored in GitHub Secrets
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
