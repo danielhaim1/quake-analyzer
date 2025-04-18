@@ -126,7 +126,7 @@ Date
 Exported 2000 major quakes to 'major_quakes_2025-04-18_10-34-46.csv' at 2025-04-18T10:34:46.478832
 ```
 
-![Exported CSV Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-2-export-to-csv.png)
+![Exported CSV Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-2-export-to-csv.png?raw=true)
 
 ### Example 3: Filter by region (Japan, last 10 years)
 This filters earthquakes within a 500 km radius of central Japan (Lat: 36.2048, Lon: 138.2529) over the past 10 years, and analyzes quakes with a magnitude of 5.5 or higher.
@@ -200,7 +200,7 @@ Date
 2025     32
 ```
 
-![Regional Quakes Plot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-4-plot.png)
+![Regional Quakes Plot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-4-plot.png?raw=true)
 
 ---
 
