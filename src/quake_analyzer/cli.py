@@ -34,6 +34,22 @@ PLACE_COORDS = load_places()
 
 init(autoreset=True)
 
+
+def get_location_coords(location_name):
+    # Normalize the location name for matching
+    location_name_lower = location_name.strip().lower()
+
+    # Search for the location in the loaded PLACE_COORDS DataFrame
+    location_data = PLACE_COORDS[PLACE_COORDS["name_lower"] == location_name_lower]
+    if not location_data.empty:
+        # Return the first match (could be extended to handle multiple locations)
+        lat = location_data.iloc[0]["latitude"]
+        lon = location_data.iloc[0]["longitude"]
+        return lat, lon
+    else:
+        print(Fore.RED + f"Location '{location_name}' not found in available data.")
+        return None, None
+
 def fetch_usgs_quakes(min_magnitude=4.5, days=90, lat=None, lon=None, radius_km=None):
     start_date = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
     params = {
@@ -42,7 +58,9 @@ def fetch_usgs_quakes(min_magnitude=4.5, days=90, lat=None, lon=None, radius_km=
         "minmagnitude": min_magnitude,
         "limit": 2000
     }
+    # Ensure lat, lon, and radius are passed for location-based filtering
     if lat and lon and radius_km:
+        print(f"Fetching data within {radius_km} km of {lat}, {lon}")
         params.update({
             "latitude": lat,
             "longitude": lon,
@@ -106,6 +124,7 @@ def estimate_recurrence_interval(quake_data, minmag):
         print(Fore.GREEN + f"The estimated probability of a major earthquake (≥ {minmag} magnitude) is HIGH. There is a significant likelihood of occurrence within the next year.")
     else:
         print(Fore.RED + f"The estimated probability of a major earthquake (≥ {minmag} magnitude) is LOW. The likelihood of occurrence within the next year is minimal.")
+
 def main():
     parser = argparse.ArgumentParser(description="Analyze quake recurrence intervals.")
     parser.add_argument("--data", help="List of quakes as [[timestamp, magnitude, 'location'], ...]")
@@ -130,12 +149,15 @@ def main():
                 return
             estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
         elif args.fetch:
+            lat, lon = None, None
+            if args.location:
+                lat, lon = get_location_coords(args.location)  # Get coordinates for location
             quake_data = fetch_usgs_quakes(
                 min_magnitude=args.minmag,
                 days=args.days,
-                lat=None,
-                lon=None,
-                radius_km=None
+                lat=lat,
+                lon=lon,
+                radius_km=args.radius  # Apply radius filter if provided
             )
             estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
         else:
@@ -144,12 +166,15 @@ def main():
         return
 
     if args.fetch:
+        lat, lon = None, None
+        if args.location:
+            lat, lon = get_location_coords(args.location)  # Get coordinates for location
         quake_data = fetch_usgs_quakes(
             min_magnitude=args.minmag,
             days=args.days,
-            lat=None,
-            lon=None,
-            radius_km=None
+            lat=lat,
+            lon=lon,
+            radius_km=args.radius  # Apply radius filter if provided
         )
         print(Fore.WHITE + f"Fetched {len(quake_data)} quakes")
     elif args.data:
