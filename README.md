@@ -1,26 +1,17 @@
 # Quake Analyzer
 
-A Python CLI tool to fetch, analyze, and visualize global earthquake data from the [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/). Useful for identifying recurrence intervals, regional clusters, and year-by-year magnitude trends.
+quake-analyzer is a command-line tool that fetches and analyzes earthquake data, including filtering based on magnitude and location, calculating recurrence intervals, and generating reports. This tool can help researchers and enthusiasts analyze earthquake data from the [USGS database](https://earthquake.usgs.gov/fdsnws/event/1/) over various timeframes.
 
----
-
-## Dependencies
-This project relies on the following major Python libraries:
-- [pandas](https://pandas.pydata.org/) for data manipulation and analysis.
-- [requests](https://requests.readthedocs.io/en/latest/) for fetching data from the USGS API.
-- [matplotlib](https://matplotlib.org/) for plotting data (optional, used with the `--plot` flag).
-
-See `requirements.txt` for a full list of dependencies.
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/main.png?raw=true)
 
 ---
 
 ## Features
-
-- Fetch earthquake data from USGS (up to 20 years back)
-- Filter by magnitude, location, or radius
-- Analyze recurrence intervals for major quakes (≥ 6.0)
-- Output quake frequency by year
-- Optional CSV export and bar chart plotting
+- Fetch earthquake data from the USGS Earthquake API.
+- Filter earthquakes based on magnitude and region.
+- Analyze major earthquakes and their recurrence intervals.
+- Export the list to CSV.
+- Plot the count of major earthquakes per year.
 
 ---
 
@@ -32,175 +23,114 @@ cd quake-analyzer
 pip install -e .
 ```
 
+## Dependencies
+This project relies on the following major Python libraries:
+- [pandas](https://pandas.pydata.org/) for data manipulation and analysis.
+- [requests](https://requests.readthedocs.io/en/latest/) for fetching data from the USGS API.
+- [matplotlib](https://matplotlib.org/) for plotting data (optional, used with the `--plot` flag).
+
 ---
 
-## License
-This project is licensed under the terms of the license specified in the `LICENSE.txt` file.
+## Options
+
+| Option       | Description                                                                                 | Default          |
+|--------------|---------------------------------------------------------------------------------------------|------------------|
+| `--data`     | Manually pass quakes as `[[timestamp, magnitude, location], ...]`                          | None             |
+| `--fetch`    | Fetch recent earthquakes from USGS                                                         | None             |
+| `--minmag`   | Minimum magnitude to filter                                                                | `6.0`            |
+| `--days`     | Number of days to look back from today                                                     | `1825` (5 years) |
+| `--location` | Location name to filter by (supports city, state, or country from CSVs)                   | None             |
+| `--radius`   | Radius in kilometers around the specified location                                         | None             |
+| `--export`   | Export results to CSV                                                                      | Off              |
+| `--plot`     | Plot earthquakes per year                                                                   | Off              |
 
 ---
 
-## Example Commands
-Each example below shows how to use quake-analyzer and what kind of analysis you get.
+## Examples
 
-### Example 1: Global major quakes (last 20 years)
-This command analyzes global earthquakes of magnitude ≥ 6.0 over the past 20 years (7300 days). It reports the number of major quakes per year and estimates the average recurrence interval.
-
+### Global major quakes in past 20 years
 ```bash
 quake-analyzer --fetch --minmag 6.0 --days 7300
 ```
 
+### Location based filtering
 ```bash
-Fetched 2000 quakes
+# Quakes near Tokyo (within 300 km)
+quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 5.5 --days 3650
 
-=== MAJOR EARTHQUAKE ANALYSIS ===
-Total major quakes (≥ 6.0): 2000
-Years: [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
-Gaps between events: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-Average recurrence interval: 1.0 years
+# California region, major quakes (last 20 years)
+quake-analyzer --fetch --location "California" --radius 500 --minmag 6.0 --days 7300
 
-=== QUAKES PER YEAR ===
-Date
-2011    206
-2012    133
-2013    142
-2014    155
-2015    146
-2016    147
-2017    111
-2018    134
-2019    145
-2020    121
-2021    157
-2022    127
-2023    147
-2024     99
-2025     30
+# Chile, strong events only
+quake-analyzer --fetch --location "Chile" --radius 400 --minmag 6.8 --days 7300
 ```
 
-## CLI Options
-
-| Argument        | Description                                                |
-|----------------|------------------------------------------------------------|
-| `--fetch`       | Fetch quake data from USGS                                |
-| `--data`        | Pass custom quake list as a Python-style list             |
-| `--minmag`      | Minimum magnitude to filter and analyze (default: 6.0)    |
-| `--days`        | Number of days to look back for USGS fetch                |
-| `--lat`         | Latitude for regional filter                              |
-| `--lon`         | Longitude for regional filter                             |
-| `--radius`      | Radius (in km) around lat/lon for regional filter         |
-| `--export`      | Export filtered quakes to CSV                             |
-| `--plot`        | Plot quake frequency per year (requires matplotlib)       |
-
-### Example 2: Export results to CSV
+### Custom manual input
 ```bash
-quake-analyzer --fetch --minmag 6.0 --days 7300 --export
+# Manually analyze a couple of events
+quake-analyzer --data "[['2021-12-01T12:00:00', 6.5, 'Tokyo'], ['2022-01-01T15:00:00', 7.0, 'Santiago']]"
 ```
 
+### Export and Plot
 ```bash
-Fetched 2000 quakes
+# Export filtered results to CSV
+quake-analyzer --fetch --location "Alaska" --radius 500 --minmag 6.0 --days 3650 --export
 
-=== MAJOR EARTHQUAKE ANALYSIS ===
-Total major quakes (≥ 6.0): 2000
-Years: [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
-Gaps between events: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-Average recurrence interval: 1.0 years
+# Plot quake frequency per year
+quake-analyzer --fetch --location "Indonesia" --radius 500 --minmag 6.0 --days 7300 --plot
 
-=== QUAKES PER YEAR ===
-Date
-2011    206
-2012    133
-2013    142
-2014    155
-2015    146
-2016    147
-2017    111
-2018    134
-2019    145
-2020    121
-2021    157
-2022    127
-2023    147
-2024     99
-2025     30
-
-Exported 2000 major quakes to 'major_quakes_2025-04-18_10-34-46.csv' at 2025-04-18T10:34:46.478832
+# Export and plot together
+quake-analyzer --fetch --location "Mexico" --radius 300 --minmag 6.2 --days 5000 --export --plot
 ```
 
-![Exported CSV Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-2-export-to-csv.png?raw=true)
+---
 
-### Example 3: Filter by region (Japan, last 10 years)
-This filters earthquakes within a 500 km radius of central Japan (Lat: 36.2048, Lon: 138.2529) over the past 10 years, and analyzes quakes with a magnitude of 5.5 or higher.
+## Location Resolution
+You can pass `--location` using names of:
+- Cities (e.g., `Tokyo`, `San Francisco`)
+- States (e.g., `California`, `Bavaria`)
+- Countries (e.g., `Japan`, `Mexico`)
 
-```bash
-quake-analyzer --fetch --minmag 5.5 --days 3650 --lat 36.2048 --lon 138.2529 --radius 500
+Coordinates are looked up from:
+```
+src/data/
+├── cities.csv
+├── states.csv
+├── countries.csv
+```
+Each file should include:
+```csv
+name,latitude,longitude
 ```
 
-```bash
-Fetched 78 quakes
+---
 
-=== MAJOR EARTHQUAKE ANALYSIS ===
-Total major quakes (≥ 5.5): 78
-Years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
-Gaps between events: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-Average recurrence interval: 1.0 years
+## Outputs
+The tool will output earthquake data in the terminal, including:
 
-=== QUAKES PER YEAR ===
-Date
-2015     1
-2016    10
-2017     4
-2018     8
-2019     5
-2020     8
-2021    13
-2022     9
-2023     6
-2024    13
-2025     1
-```
+- The total number of major earthquakes.
+- The years in which earthquakes occurred.
+- Gaps between major earthquakes.
+- A summary of earthquakes per year.
 
-### Example 4: Regional quake history with plot
-This fetches earthquakes of magnitude ≥ 3.0 from the past 20 years, within a 300 km radius around Northern California (lat 38.0, lon -122.0). It visualizes the yearly quake count as a bar chart.
+If `--export` is used, the results will be saved to a CSV file with the following columns:
 
-```bash
-quake-analyzer --fetch --minmag 3.0 --days 7300 --lat 38.0 --lon -122.0 --radius 300 --plot
-```
+- Years Ago
+- Magnitude
+- Date
+- Timestamp
+- Location
+- Type (Major or Moderate)
 
-```bash
-Fetched 2000 quakes
+---
 
-=== MAJOR EARTHQUAKE ANALYSIS ===
-Total major quakes (≥ 3.0): 2000
-Years: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
-Gaps between events: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-Average recurrence interval: 1.0 years
+## Screenshots
 
-=== QUAKES PER YEAR ===
-Date
-2005     14
-2006    110
-2007     96
-2008    133
-2009     84
-2010    107
-2011    145
-2012     69
-2013    105
-2014     82
-2015     79
-2016    107
-2017    104
-2018     70
-2019     77
-2020    123
-2021    170
-2022     77
-2023    101
-2024    115
-2025     32
-```
-
-![Regional Quakes Plot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/example-4-plot.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-1.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-2.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-3.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-4.png?raw=true)
+![Quake Analyzer Screenshot](https://github.com/danielhaim1/quake-analyzer/blob/master/docs/img-5.png?raw=true)
 
 ---
 
@@ -215,3 +145,20 @@ Date
 pip install matplotlib
 ```
 
+---
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## Reporting Bugs
+If you encounter a bug or issue, please open an issue on the [GitHub repository](https://github.com/danielhaim1/quake-analyzer/issues) with as much detail as possible including:
+- Command used
+- Stack trace or error message
+- Your OS and Python version
