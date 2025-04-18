@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.0.7] - 2025-04-18 - Bug Fixes and Plotting Enhancements
+
+### Added
+- Added checks to ensure that minmag is passed correctly when calling the recurrence interval estimation function (estimate_recurrence_interval()).
+- Added graceful error handling for missing data when plotting earthquake frequency per year.
+- Included a message indicating whether the estimated probability of a major earthquake is HIGH or LOW, based on the calculated recurrence interval.
+- Enhanced the --plot functionality to only attempt plotting if there is valid data.
+
+### Changed
+- Fixed TypeError by ensuring minmag is always passed as an argument for estimate_recurrence_interval().
+- Improved the error messages related to plotting when there is no data or matplotlib is not installed.
+- Refined the logic for plotting earthquake frequencies to handle cases where the data is empty or unavailable.
+
 ## [0.0.3] - [0.0.6] - 2025-04-18 - Added Recurrence Interval Estimation
 
 #### Added
