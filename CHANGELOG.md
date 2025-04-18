@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.0.3] - 2025-04-18 - Added Recurrence Interval Estimation
+## [0.0.3] - [0.0.6] - 2025-04-18 - Added Recurrence Interval Estimation
 
 #### Added
 - Added estimate functionality for predicting the recurrence interval and probability of future major earthquakes (≥ 6.0 magnitude).

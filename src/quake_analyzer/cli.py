@@ -65,27 +65,47 @@ def fetch_usgs_quakes(min_magnitude=4.5, days=90, lat=None, lon=None, radius_km=
     return quakes
 
 # Estimate Recurrence Interval and Probability
-def estimate_recurrence_interval(quake_data):
+def estimate_recurrence_interval(quake_data, minmag):
     # Extract timestamps of the earthquakes
     timestamps = [q[0] for q in quake_data]
     magnitudes = [q[1] for q in quake_data]
 
-    # Filter major quakes (>= 6.0 magnitude)
-    major_quakes = [q for q in zip(timestamps, magnitudes) if q[1] >= 6.0]
-    
+    # Filter major quakes (>= minmag)
+    major_quakes = [q for q in zip(timestamps, magnitudes) if q[1] >= minmag]
+
     # Convert timestamps to datetime objects
     dates = [datetime.fromisoformat(ts) for ts, _ in major_quakes]
 
-    # Calculate time intervals (in years)
-    time_intervals = [(dates[i] - dates[i-1]).days / 365.25 for i in range(1, len(dates))]
+    # Group quakes by year
+    years = [d.year for d in dates]
+    years.sort()
 
-    # Calculate mean recurrence interval
-    mean_recurrence_interval = np.mean(time_intervals)
-    probability = 1 / mean_recurrence_interval if mean_recurrence_interval > 0 else 0
+    # Calculate gaps between years (gaps = difference between consecutive years with quakes)
+    major_years = sorted(set(years))
+    gaps = [major_years[i+1] - major_years[i] for i in range(len(major_years) - 1)]
 
-    print(Fore.GREEN + f"Mean Recurrence Interval: {mean_recurrence_interval:.2f} years")
+    # Handle case if no gaps are available (e.g., too few quakes)
+    if len(gaps) == 0:
+        print(Fore.RED + "Not enough data to calculate recurrence intervals.")
+        return
+
+    # Calculate mean gap (mean recurrence interval)
+    mean_gap = np.mean(gaps)
+    probability = 1 / mean_gap if mean_gap > 0 else 0
+
+    # Cap the probability to avoid unrealistic values
+    if probability > 1:
+        probability = 1
+
+    # Print results
+    print(Fore.GREEN + f"Mean Recurrence Interval (based on years): {mean_gap:.2f} years")
     print(Fore.YELLOW + f"Estimated Probability of a major earthquake occurring in 1 year: {probability:.4f}")
 
+    # Add a text-based message for the probability estimate
+    if probability >= 0.75:
+        print(Fore.GREEN + f"The estimated probability of a major earthquake (≥ {minmag} magnitude) is HIGH. There is a significant likelihood of occurrence within the next year.")
+    else:
+        print(Fore.RED + f"The estimated probability of a major earthquake (≥ {minmag} magnitude) is LOW. The likelihood of occurrence within the next year is minimal.")
 def main():
     parser = argparse.ArgumentParser(description="Analyze quake recurrence intervals.")
     parser.add_argument("--data", help="List of quakes as [[timestamp, magnitude, 'location'], ...]")
@@ -108,7 +128,7 @@ def main():
             except Exception as e:
                 print(Fore.RED + "Invalid data format. Make sure it's a Python-style list.")
                 return
-            estimate_recurrence_interval(quake_data)
+            estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
         elif args.fetch:
             quake_data = fetch_usgs_quakes(
                 min_magnitude=args.minmag,
@@ -117,7 +137,7 @@ def main():
                 lon=None,
                 radius_km=None
             )
-            estimate_recurrence_interval(quake_data)
+            estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
         else:
             print(Fore.RED + "Provide --data or --fetch for earthquake data.")
             return
@@ -178,7 +198,7 @@ def main():
     print(Fore.CYAN + "Years:", major_years)
     print(Fore.CYAN + "Gaps between events:", gaps)
     print(Fore.CYAN + "Average recurrence interval:", round(avg_gap, 2), "years")
-    estimate_recurrence_interval(quake_data)  # Display the estimate here
+    estimate_recurrence_interval(quake_data, args.minmag) 
 
     per_year = df_major.groupby("Date").size()
     print(Fore.GREEN + "\n=== QUAKES PER YEAR ===")
@@ -200,6 +220,7 @@ def main():
             plt.xlabel('Year')
             plt.tight_layout()
             plt.show()
+
         except ImportError:
             print(Fore.RED + "matplotlib not installed. Run: pip install matplotlib")
 

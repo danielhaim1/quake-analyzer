@@ -65,6 +65,13 @@ quake-analyzer --fetch --minmag 6.0 --days 7300
 quake-analyzer --fetch --minmag 6.0 --days 7300 --estimate
 ```
 
+### Estimate Analysis (Colombia)
+```bash
+quake-analyzer --fetch --minmag 9.5 --location "Colombia" --radius 1000 --days 10000
+quake-analyzer --fetch --minmag 8.5 --location "Colombia" --radius 1000 --days 10000
+quake-analyzer --fetch --minmag 7.5 --location "Colombia" --radius 1000 --days 10000
+```
+
 ### Location based filtering
 ```bash
 # Quakes near Tokyo (within 300 km)
@@ -116,21 +123,21 @@ name,latitude,longitude
 ---
 
 ## Estimate: How It Works
-
 The estimation feature calculates two important metrics based on recent earthquake data:
-1. Recurrence Interval: The average time interval (in years) between major earthquakes (≥ 6.0 magnitude).
-2. Probability: The estimated probability of a major earthquake occurring within the next year.
+- Recurrence Interval: The average time (in years) between major earthquakes (≥ 6.0 magnitude).
+- Probability: The likelihood of a major earthquake occurring within the next year.
 
-### How the Estimate is Calculated:
-
-- The tool first filters major quakes (≥ 6.0 magnitude) from the fetched or provided earthquake data.
-- It then calculates the time intervals between consecutive quakes.
-- The mean recurrence interval is computed as the average of those time intervals.
-- Finally, the probability of an earthquake occurring within the next year is estimated as 1 / mean recurrence interval.
+### Calculation Process::
+- Filter Major Quakes: Only earthquakes with a magnitude of 6.0 or higher are considered.
+- Calculate Time Intervals: The tool calculates the time differences between each consecutive major earthquake.
+- Compute Mean Recurrence Interval: The mean recurrence interval is the average of these time intervals.
+- Estimate Probability: The probability of a major earthquake occurring within the next year is estimated as the inverse of the mean recurrence interval (1 / mean recurrence interval).
 
 Example:
 ```bash
-quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 6.0 --days 3650 --estimate
+quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 9.5 --days 20000 --estimate
+quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 8.5 --days 20000 --estimate
+quake-analyzer --fetch --location "Tokyo" --radius 300 --minmag 7.5 --days 20000 --estimate
 ```
 
 - Fetch earthquake data for Tokyo (within a 300 km radius).
