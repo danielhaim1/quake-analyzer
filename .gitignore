@@ -28,6 +28,7 @@ __pycache__/
 # ======================
 .Python
 build/
+dist/
 downloads/
 eggs/
 .eggs/

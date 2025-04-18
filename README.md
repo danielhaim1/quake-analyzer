@@ -204,6 +204,36 @@ Date
 
 ---
 
+## Releasing a New Version
+
+This project uses `setuptools_scm` to derive the version number from Git tags and GitHub Actions to automate publishing to PyPI.
+
+To release a new version:
+
+1.  **Ensure Clean State:** Make sure your main branch (`master`) is up-to-date and all changes for the release are committed. Check `git status`.
+2.  **Determine Version:** Decide on the new version number (e.g., `0.1.5`, `0.2.0`) following [Semantic Versioning](https://semver.org/).
+3.  **Create Tag:** Create an annotated Git tag for the release commit:
+    ```bash
+    # Replace X.Y.Z with the new version
+    git tag -a vX.Y.Z -m "Release version X.Y.Z"
+    ```
+4.  **Push Tag:** Push the tag to GitHub:
+    ```bash
+    # Replace vX.Y.Z with the tag you created
+    git push origin vX.Y.Z
+    ```
+5.  **Create GitHub Release:**
+    *   Go to the [Releases page](https://github.com/danielhaim1/quake-analyzer/releases) on GitHub.
+    *   Click "Draft a new release".
+    *   Choose the tag you just pushed (e.g., `vX.Y.Z`) from the dropdown.
+    *   Set the "Release title" (usually the same as the tag).
+    *   Write release notes describing the changes in this version (you can use "Auto-generate release notes").
+    *   Click "**Publish release**".
+
+Publishing the release on GitHub will automatically trigger the `publish.yml` workflow, which builds the package (using the version from the tag) and uploads it to PyPI. You can monitor the workflow run under the "Actions" tab in the GitHub repository.
+
+---
+
 ## Notes
 
 - USGS limits results to 20 years and 2000 entries per request.
