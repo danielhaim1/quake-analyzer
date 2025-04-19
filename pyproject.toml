@@ -4,38 +4,44 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quake-analyzer"
-# Manually set the version before release
 version = "0.0.9"
 description = "CLI tool to fetch and analyze earthquake data from USGS"
 readme = "README.md"
 requires-python = ">=3.7"
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
+
 authors = [
-  { name="Daniel Haim"},
+  { name = "Daniel Haim" }
 ]
-keywords = ["earthquake", "usgs", "geology", "cli", "data analysis", "visualization"]
+
+keywords = [
+  "earthquake", "usgs", "geology", "cli", "data analysis", "visualization"
+]
+
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Operating System :: OS Independent",
-    "Topic :: Scientific/Engineering :: GIS",
-    "Topic :: Utilities",
-    "Environment :: Console",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: GIS",
+  "Topic :: Utilities",
+  "Environment :: Console"
 ]
 
 dependencies = [
-    "pandas",
-    "requests",
-    "matplotlib",
+  "pandas",
+  "numpy",
+  "requests",
+  "matplotlib",
+  "colorama"
 ]
 
 [project.urls]
@@ -45,3 +51,16 @@ dependencies = [
 
 [project.scripts]
 quake-analyzer = "quake_analyzer.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["quake_analyzer"]
+
+[tool.setuptools.package-data]
+quake_analyzer = ["data/*.csv"]
+
+
+

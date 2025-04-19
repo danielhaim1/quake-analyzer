@@ -6,13 +6,14 @@ import ast
 import requests
 from colorama import Fore, init
 import os
+from importlib.resources import files
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(BASE_DIR, "../data")
+def get_data_path(filename):
+    return files("quake_analyzer").joinpath("data", filename)
 
 def load_places():
     def prep(filepath, name_col, source_name):
-        print(Fore.BLUE + f"Loading {source_name}...")
+        print(Fore.WHITE + f"Loading {source_name}...")
         df = pd.read_csv(filepath)
 
         required = {name_col, "latitude", "longitude"}
@@ -24,9 +25,9 @@ def load_places():
         df["name_lower"] = df[name_col].str.strip().str.lower()
         return df
 
-    cities = prep(os.path.join(DATA_DIR, "cities.csv"), "name", "cities.csv")
-    countries = prep(os.path.join(DATA_DIR, "countries.csv"), "name", "countries.csv")
-    states = prep(os.path.join(DATA_DIR, "states.csv"), "name", "states.csv")
+    cities = prep(get_data_path("cities.csv"), "name", "cities.csv")
+    countries = prep(get_data_path("countries.csv"), "name", "countries.csv")
+    states = prep(get_data_path("states.csv"), "name", "states.csv")
 
     return pd.concat([cities, states, countries], ignore_index=True)
 
