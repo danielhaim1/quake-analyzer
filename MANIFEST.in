@@ -1,0 +1,22 @@
+# Include essential project files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include requirements.txt
+include pyproject.toml
+include setup.py
+
+# Include docs (but not the whole dir)
+recursive-include docs *.png
+
+# Include data files in the package
+recursive-include src/quake_analyzer/data *.csv
+
+# Exclude internal scripts
+exclude prepare_release.py
+
+# Prune build artifacts and egg-info
+prune build
+prune dist
+prune __pycache__
+prune *.egg-info
