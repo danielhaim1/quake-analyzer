@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.1.0] - 2025-04-19 - Full CLI Packaging & Data Integration
+
+### Added
+- Fully working CLI command: `quake-analyzer` now available after install.
+- Bundled `cities.csv`, `states.csv`, and `countries.csv` using `importlib.resources`.
+- Added support for `importlib.resources.files()` to safely access package data.
+- Added `data/` directory to package and included it via `pyproject.toml`.
+
+### Changed
+- Migrated project structure to modern `src/` layout (`src/quake_analyzer`).
+- Updated `pyproject.toml` with `package-dir`, `package-data`, and `scripts` sections.
+- Cleaned up `requirements.txt` and ensured reproducible local builds.
+- Renamed version to `0.1.0` to mark milestone: first fully installable & publishable release.
+
+### Fixed
+- Fixed `ModuleNotFoundError` caused by missing `quake_analyzer` module after install.
+- Fixed CSV path resolution errors during CLI execution by using correct data path lookups.
+
 ## [0.0.7] - 2025-04-18 - Bug Fixes and Plotting Enhancements
 
 ### Added
