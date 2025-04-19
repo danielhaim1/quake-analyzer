@@ -12,9 +12,6 @@ recursive-include docs *.png
 # Include data files in the package
 recursive-include src/quake_analyzer/data *.csv
 
-# Exclude internal scripts
-exclude prepare_release.py
-
 # Prune build artifacts and egg-info
 prune build
 prune dist
