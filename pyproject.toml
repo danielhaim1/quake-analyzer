@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quake-analyzer"
-version = "0.1.0"
+version = "v0.1.1"
 description = "CLI tool to fetch and analyze earthquake data from USGS"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -67,6 +67,7 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["quake_analyzer"]
+exclude = ["*.egg-info", "quake_analyzer.egg-info", "quake_analyzer.prepare_release"]
 
 [tool.setuptools.package-data]
 quake_analyzer = ["data/*.csv"]
