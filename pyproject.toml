@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "quake-analyzer"
-version = "0.0.9"
+version = "0.1.0"
 description = "CLI tool to fetch and analyze earthquake data from USGS"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -15,7 +15,16 @@ authors = [
 ]
 
 keywords = [
-  "earthquake", "usgs", "geology", "cli", "data analysis", "visualization"
+  "python",
+  "earthquakes",
+  "recursion",
+  "usgs",
+  "earthquake-data",
+  "usgs-data",
+  "earthquake-visualization",
+  "probability-statistics",
+  "earthquake-detection",
+  "usgs-earthquake"
 ]
 
 classifiers = [
@@ -61,6 +70,3 @@ include = ["quake_analyzer"]
 
 [tool.setuptools.package-data]
 quake_analyzer = ["data/*.csv"]
-
-
-

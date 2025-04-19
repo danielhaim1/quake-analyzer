@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="quake-analyzer",
-    version="0.0.9",
+    version="0.1.0",
     author="Daniel Haim",
     description="CLI tool for earthquake recurrence analysis using USGS data",
     packages=find_packages(),
