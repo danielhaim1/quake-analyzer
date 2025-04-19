@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - 2025-04-19 - Full CLI Packaging & Data Integration
+## [0.1.3] - 2025-04-19 - Full CLI Packaging & Data Integration
 
 ### Added
 - Fully working CLI command: `quake-analyzer` now available after install.
