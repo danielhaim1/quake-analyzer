@@ -127,80 +127,77 @@ def estimate_recurrence_interval(quake_data, minmag):
         print(Fore.RED + f"The estimated probability of a major earthquake (≥ {minmag} magnitude) is LOW. The likelihood of occurrence within the next year is minimal.")
 
 def main():
-    parser = argparse.ArgumentParser(description="Analyze quake recurrence intervals.")
+    parser = argparse.ArgumentParser(description="Analyze earthquake data and recurrence intervals.")
     parser.add_argument("--data", help="List of quakes as [[timestamp, magnitude, 'location'], ...]")
     parser.add_argument("--fetch", action="store_true", help="Fetch recent quakes from USGS")
-    parser.add_argument("--minmag", type=float, default=6.0, help="Min magnitude to filter quakes")
-    parser.add_argument("--days", type=int, default=365*5, help="Days back to fetch data (only with --fetch)")
-    parser.add_argument("--location", type=str, help="Location name to filter (city/state/country)")
-    parser.add_argument("--radius", type=float, help="Radius in km for regional filter")
-    parser.add_argument("--export", action="store_true", help="Export filtered quakes to CSV")
-    parser.add_argument("--plot", action="store_true", help="Plot quakes per year chart")
-    parser.add_argument("--estimate", action="store_true", help="Estimate the recurrence interval and probability of major quakes")
+    parser.add_argument("--minmag", type=float, default=6.0, help="Minimum magnitude threshold")
+    parser.add_argument("--days", type=int, default=365 * 5, help="Days back for fetching USGS data")
+    parser.add_argument("--location", type=str, help="Named location to use (city/state/country)")
+    parser.add_argument("--lat", type=float, help="Latitude (if skipping --location)")
+    parser.add_argument("--lon", type=float, help="Longitude (if skipping --location)")
+    parser.add_argument("--radius", type=float, help="Radius in kilometers for location filtering")
+    parser.add_argument("--estimate", action="store_true", help="Estimate recurrence interval and probability")
+    parser.add_argument("--export", action="store_true", help="Export major quakes to CSV")
+    parser.add_argument("--plot", action="store_true", help="Plot yearly quake distribution")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose/debug output")
     args = parser.parse_args()
 
-    # Fetch or load quake data
-    if args.estimate:
-        print(Fore.CYAN + "Performing Recurrence Interval and Probability Estimation...")
-        if args.data:
-            try:
-                quake_data = ast.literal_eval(args.data)
-            except Exception as e:
-                print(Fore.RED + "Invalid data format. Make sure it's a Python-style list.")
-                return
-            estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
-        elif args.fetch:
-            lat, lon = None, None
-            if args.location:
-                lat, lon = get_location_coords(args.location)  # Get coordinates for location
-            quake_data = fetch_usgs_quakes(
-                min_magnitude=args.minmag,
-                days=args.days,
-                lat=lat,
-                lon=lon,
-                radius_km=args.radius  # Apply radius filter if provided
-            )
-            estimate_recurrence_interval(quake_data, args.minmag)  # Pass minmag here
-        else:
-            print(Fore.RED + "Provide --data or --fetch for earthquake data.")
-            return
-        return
+    def vprint(msg):
+        if args.verbose:
+            print(Fore.WHITE + "[DEBUG] " + msg)
 
-    if args.fetch:
-        lat, lon = None, None
+    # Load or fetch data
+    quake_data = []
+    if args.data:
+        try:
+            quake_data = ast.literal_eval(args.data)
+            vprint(f"Loaded {len(quake_data)} quakes from --data")
+        except Exception:
+            print(Fore.RED + "Invalid --data format. Use Python-style list.")
+            return
+    elif args.fetch:
+        lat, lon = args.lat, args.lon
         if args.location:
-            lat, lon = get_location_coords(args.location)  # Get coordinates for location
+            lat, lon = get_location_coords(args.location)
+            if lat is None or lon is None:
+                print(Fore.RED + "Aborting fetch due to unknown location.")
+                return
+
         quake_data = fetch_usgs_quakes(
             min_magnitude=args.minmag,
             days=args.days,
             lat=lat,
             lon=lon,
-            radius_km=args.radius  # Apply radius filter if provided
+            radius_km=args.radius
         )
-        print(Fore.WHITE + f"Fetched {len(quake_data)} quakes")
-    elif args.data:
-        try:
-            quake_data = ast.literal_eval(args.data)
-        except Exception as e:
-            print(Fore.RED + "Invalid data format. Make sure it's a Python-style list.")
-            return
+        vprint(f"Fetched {len(quake_data)} quakes")
     else:
         print(Fore.RED + "Provide --data or --fetch")
         return
 
-    # Process quake list
+    if not quake_data:
+        print(Fore.RED + "No earthquake data available.")
+        return
+
+    # Core analysis
+    if args.estimate:
+        print(Fore.CYAN + "\n=== ESTIMATION MODE ===")
+        estimate_recurrence_interval(quake_data, args.minmag)
+
+    # Transform to DataFrame
     quakes = []
     for q in quake_data:
-        event_time = datetime.fromisoformat(q[0])
-        event_year = event_time.year
+        try:
+            event_time = datetime.fromisoformat(q[0])
+        except Exception:
+            continue
+        years_ago = round((datetime.utcnow() - event_time).days / 365.25, 2)
         magnitude = float(q[1])
         location = q[2] if len(q) > 2 else "Unknown"
-        years_ago = round((datetime.now() - event_time).days / 365.25, 2)
-
         quakes.append({
             "Years Ago": years_ago,
             "Magnitude": magnitude,
-            "Date": event_year,
+            "Date": event_time.year,
             "Timestamp": event_time.isoformat(),
             "Location": location,
             "Type": f"Major (≥ {args.minmag})" if magnitude >= args.minmag else f"Moderate (< {args.minmag})"
@@ -208,45 +205,37 @@ def main():
 
     df = pd.DataFrame(quakes)
     if df.empty:
-        print(Fore.RED + "No earthquake data found after filtering. Exiting.")
+        print(Fore.RED + "No earthquake data found after processing.")
         return
     df.sort_values(by="Date", ascending=False, inplace=True)
 
     df_major = df[df["Magnitude"] >= args.minmag].copy()
     df_major["Date"] = df_major["Date"].astype(int)
     major_years = sorted(set(df_major["Date"].tolist()))
-    gaps = [major_years[i+1] - major_years[i] for i in range(len(major_years) - 1)]
-    avg_gap = sum(gaps) / len(gaps) if gaps else 0
+    gaps = [major_years[i + 1] - major_years[i] for i in range(len(major_years) - 1)]
+    avg_gap = round(sum(gaps) / len(gaps), 2) if gaps else 0
 
-    # Display major earthquake analysis with estimate
-    print(Fore.GREEN + "\n=== MAJOR EARTHQUAKE ANALYSIS ===")
+    print(Fore.GREEN + "\n=== MAJOR EARTHQUAKE SUMMARY ===")
     print(Fore.YELLOW + f"Total major quakes (≥ {args.minmag}):", len(df_major))
     print(Fore.CYAN + "Years:", major_years)
     print(Fore.CYAN + "Gaps between events:", gaps)
-    print(Fore.CYAN + "Average recurrence interval:", round(avg_gap, 2), "years")
-    estimate_recurrence_interval(quake_data, args.minmag) 
-
-    per_year = df_major.groupby("Date").size()
-    print(Fore.GREEN + "\n=== QUAKES PER YEAR ===")
-    print(Fore.WHITE + per_year.to_string())
+    print(Fore.CYAN + "Average recurrence interval:", avg_gap, "years")
 
     if args.export:
         export_time = datetime.utcnow()
-        export_iso = export_time.isoformat()
-        export_filename = f"major_quakes_{export_time.strftime('%Y-%m-%d_%H-%M-%S')}.csv"
-        df_major["QuakeAnalyzer_Timestamp"] = export_iso
-        df_major.to_csv(export_filename, index=False)
-        print(Fore.MAGENTA + f"Exported {len(df_major)} major quakes to '{export_filename}' at {export_iso}")
+        filename = f"major_quakes_{export_time.strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+        df_major["QuakeAnalyzer_Timestamp"] = export_time.isoformat()
+        df_major.to_csv(filename, index=False)
+        print(Fore.MAGENTA + f"Exported data to {filename}")
 
     if args.plot:
         try:
             import matplotlib.pyplot as plt
-            per_year.plot(kind='bar', figsize=(12, 4), title=f'Quakes ≥ {args.minmag} Per Year')
+            df_major.groupby("Date").size().plot(kind='bar', figsize=(12, 4), title=f'Quakes ≥ {args.minmag} Per Year')
             plt.ylabel(f'Count (≥ {args.minmag})')
             plt.xlabel('Year')
             plt.tight_layout()
             plt.show()
-
         except ImportError:
             print(Fore.RED + "matplotlib not installed. Run: pip install matplotlib")
 
