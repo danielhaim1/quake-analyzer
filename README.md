@@ -22,17 +22,38 @@ quake-analyzer is a command-line tool that fetches and analyzes earthquake data,
 
 ## Installation
 
+### From source
+
 ```bash
 git clone https://github.com/danielhaim1/quake-analyzer.git
 cd quake-analyzer
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 
+### From PyPI
+
+```bash
+pip install quake-analyzer
+
+# Run the CLI help command to verify:
+quake-analyzer --help
+# Loading cities.csv...
+# Loading countries.csv...
+# Loading states.csv...
+```
+
 ## Dependencies
+
 This project relies on the following major Python libraries:
-- [pandas](https://pandas.pydata.org/) for data manipulation and analysis.
-- [requests](https://requests.readthedocs.io/en/latest/) for fetching data from the USGS API.
-- [matplotlib](https://matplotlib.org/) for plotting data (optional, used with the `--plot` flag).
+
+- [pandas](https://pandas.pydata.org/) – for data manipulation and analysis.
+- [numpy](https://numpy.org/) – for numerical calculations and averaging intervals.
+- [requests](https://requests.readthedocs.io/en/latest/) – for fetching data from the USGS Earthquake API.
+- [colorama](https://pypi.org/project/colorama/) – for colorful terminal output.
+- [matplotlib](https://matplotlib.org/) – optional, used with the `--plot` flag to visualize earthquake trends.
+
 
 ---
 
