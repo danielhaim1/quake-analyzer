@@ -3,3 +3,4 @@ numpy
 requests
 matplotlib
 colorama
+importlib-resources; python_version < "3.9"

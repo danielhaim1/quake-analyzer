@@ -48,28 +48,33 @@ quake-analyzer --help
 
 This project relies on the following major Python libraries:
 
-- [pandas](https://pandas.pydata.org/) – for data manipulation and analysis.
-- [numpy](https://numpy.org/) – for numerical calculations and averaging intervals.
-- [requests](https://requests.readthedocs.io/en/latest/) – for fetching data from the USGS Earthquake API.
-- [colorama](https://pypi.org/project/colorama/) – for colorful terminal output.
-- [matplotlib](https://matplotlib.org/) – optional, used with the `--plot` flag to visualize earthquake trends.
-
+- [pandas](https://pandas.pydata.org/) - for data manipulation and analysis.
+- [numpy](https://numpy.org/) - for numerical calculations and averaging intervals.
+- [requests](https://requests.readthedocs.io/en/latest/) - for fetching data from the USGS Earthquake API.
+- [colorama](https://pypi.org/project/colorama/) - for colorful terminal output.
+- [matplotlib](https://matplotlib.org/) - optional, used with the `--plot` flag to visualize earthquake trends.
 
 ---
 
 ## Options
 
-| Option       | Description                                                                                 | Default          |
-|--------------|---------------------------------------------------------------------------------------------|------------------|
-| `--data`     | Manually pass quakes as `[[timestamp, magnitude, location], ...]`                          | None             |
-| `--fetch`    | Fetch recent earthquakes from USGS                                                         | None             |
-| `--minmag`   | Minimum magnitude to filter                                                                | `6.0`            |
-| `--days`     | Number of days to look back from today                                                     | `1825` (5 years) |
-| `--location` | Location name to filter by (supports city, state, or country from CSVs)                   | None             |
-| `--radius`   | Radius in kilometers around the specified location                                         | None             |
-| `--export`   | Export results to CSV                                                                      | Off              |
-| `--plot`     | Plot earthquakes per year                                                                   | Off              |
-| `--estimate`     | Estimate the recurrence interval and probability of major quakes | Off              |
+| Option         | Description                                                                                 | Default          |
+|----------------|---------------------------------------------------------------------------------------------|------------------|
+| `--data`       | Manually pass quakes as `[[timestamp, magnitude, location], ...]`                          | None             |
+| `--fetch`      | Fetch recent earthquakes from USGS                                                         | None             |
+| `--minmag`     | Minimum magnitude to filter                                                                | `6.0`            |
+| `--days`       | Number of days to look back from today                                                     | `1825` (5 years) |
+| `--start`      | Start date for USGS query (format: `YYYY-MM-DD`)                                           | None             |
+| `--end`        | End date for USGS query (format: `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`)                    | None             |
+| `--yesterday`  | Automatically set `--end` to yesterday 23:59:59 UTC                                        | Off              |
+| `--location`   | Location name to filter by (supports city, state, or country from CSVs)                   | None             |
+| `--lat`        | Latitude for search center (used if `--location` is not set)                               | None             |
+| `--lon`        | Longitude for search center (used if `--location` is not set)                              | None             |
+| `--radius`     | Radius in kilometers around the specified location                                         | None             |
+| `--estimate`   | Estimate the recurrence interval and probability of major quakes (1, 2, 5, 10 years)       | Off              |
+| `--export`     | Export results to CSV                                                                      | Off              |
+| `--plot`       | Plot earthquakes per year                                                                   | Off              |
+| `--verbose`    | Print debug information                                                                    | Off              |
 
 ---
 

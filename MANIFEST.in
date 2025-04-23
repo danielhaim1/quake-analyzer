@@ -9,7 +9,7 @@ include setup.py
 # Include docs (but not the whole dir)
 recursive-include docs *.png
 
-# Include data files in the package
+# Include data files in the package (inside src/)
 recursive-include src/quake_analyzer/data *.csv
 
 # Prune build artifacts and egg-info
