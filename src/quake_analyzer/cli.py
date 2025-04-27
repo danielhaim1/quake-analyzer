@@ -200,7 +200,7 @@ def display_risk_section(stats: dict, minmag: float):
     print(f"{bg}{fg}10-year probability:{bold}{stats['prob_10']*100:>6.2f}%{reset}")
     print(f"")
 
-    print(stats["risk_color"] + bold + stats["risk_label"] + reset + " – improbable in the next year.")
+    print(stats["risk_color"] + bold + stats["risk_label"] + reset + " - improbable in the next year.")
     print(Fore.LIGHTBLACK_EX + "(Poisson model; real recurrence may differ.)")
 
 # ────────────────────────────────────────────────────────────────────────────────
